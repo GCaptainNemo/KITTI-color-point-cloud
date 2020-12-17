@@ -19,13 +19,14 @@ class openKittiFiles:
         self.y = pointcloud[:, 1]  # y position of point
         self.z = pointcloud[:, 2]  # z position of point
         self.r = pointcloud[:, 3]  # reflectance value of point
+        print("open finish")
 
     def open_image(self, filepath):
         self.image = cv2.imread(filepath, 1)
-
-        cv2.imshow("image", self.image)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
+        print("open image finish")
+        # cv2.imshow("image", self.image)
+        # cv2.waitKey(0)
+        # cv2.destroyAllWindows()
 
     def open_calib(self, filepath):
         with open(filepath, "rb") as f:
@@ -61,36 +62,65 @@ class openKittiFiles:
 
     def paint(self, vals="height"):
         # degr = np.degrees(np.arctan(self.z / d))
-        if vals == "height":
-            col = self.z
-        elif vals == 'dist':
-            col = np.sqrt(self.x ** 2 + self.y ** 2)  # Map Distance from sensor
-        elif vals == 'color':
+
+        if vals == 'color':
             size = np.size(self.x, 0)
+            print("point cloud size = ", size)
             xy_coordinate = np.matmul(self.transform,
                             np.concatenate((np.array([self.x]),
                                             np.array([self.y]),
                                             np.array([self.z]),
                                             np.ones((1, size))),
                                             axis=0))
-            xy_coordinate[0, :] = round(xy_coordinate[0, :] / xy_coordinate[2, :])
-            xy_coordinate[1, :] = round(xy_coordinate[1, :] / xy_coordinate[2, :])
-            col = np.array(self.image[xy_coordinate[1][i], xy_coordinate[0][i]]\
-                           for i in range(size)).T
+
+            xy_coordinate[0, :] = xy_coordinate[0, :] / xy_coordinate[2, :]
+            xy_coordinate[1, :] = xy_coordinate[1, :] / xy_coordinate[2, :]
+            # print(int(xy_coordinate[0, :]))
+            row_bound = self.image.shape[0]
+            column_bound = self.image.shape[1]
+            rgb = np.array([[0, 0, 0]])
+            for i in range(size):
+                row = round(xy_coordinate[1][i])
+                column = round(xy_coordinate[0][i])
+                if 0 <= row < row_bound and 0 <= column < column_bound:
+                    colori = np.array([self.image[round(xy_coordinate[1][i]),
+                               round(xy_coordinate[0][i])]])
+                    rgb = np.concatenate((rgb, colori), axis=0)
+                else:
+                    rgb = np.concatenate((rgb, np.zeros((1, 3))), axis=0)
+            rgb = rgb[1:, :]
+
+            # rgb = np.array([self.image[round(xy_coordinate[1][i]),
+            #                            round(xy_coordinate[0][i])] for i in range(size)]).T
+            # print(rgb)
+            # print("rgb size = ", np.size(rgb, axis=0))
+            rgba = np.concatenate((rgb, 255 * np.ones((size, 1))), axis=1)
+
             # 一维向量都是列向量，np.size(self.x, 0)表示列的数目
 
-            print(xy_coordinate[1])
-            ...
 
-        fig = mlab.figure(bgcolor=(0, 0, 0), size=(640, 500))
-        mlab.points3d(self.x, self.y, self.z,
-                      col,  # Values used for Color
-                      mode="point",
-                      colormap='spectral',  # 'bone', 'copper', 'gnuplot'
-                      # color=(0, 1, 0),   # Used a fixed (r,g,b) instead
-                      figure=fig,
-                      )
-        mlab.show()
+            pts = mlab.pipeline.scalar_scatter(self.x, self.y, self.z)  # plot the points
+            pts.add_attribute(rgba, 'colors')  # assign the colors to each point
+            pts.data.point_data.set_active_scalars('colors')
+            g = mlab.pipeline.glyph(pts)
+            g.glyph.glyph.scale_factor = 0.1  # set scaling for all the points
+            g.glyph.scale_mode = 'data_scaling_off'  # make all the points same size
+            mlab.show()
+        else:
+            if vals == "height":
+                col = self.z
+            elif vals == 'dist':
+                col = np.sqrt(self.x ** 2 + self.y ** 2)  # Map Distance from sensor
+            fig = mlab.figure(bgcolor=(0, 0, 0), size=(640, 500))
+            mlab.points3d(self.x, self.y, self.z,
+                          col,  # Values used for Color
+                          mode="point",
+                          scalemode="none",
+                          colormap='spectral',  # 'bone', 'copper', 'gnuplot'
+                          # color=(0, 1, 0),   # Used a fixed (r,g,b) instead
+                          figure=fig,
+                          )
+            mlab.show()
 
 
 if __name__ == "__main__":
