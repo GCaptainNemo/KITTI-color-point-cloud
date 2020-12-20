@@ -2,6 +2,8 @@ import numpy as np
 import cv2
 from mayavi import mlab
 
+import mayavi
+
 
 # mayavi 4.7.2, vtk-9.0.1
 
@@ -115,11 +117,42 @@ class openKittiFiles:
             mlab.points3d(self.x, self.y, self.z,
                           col,  # Values used for Color
                           mode="point",
-                          scalemode="none",
+                          # 灰度图映射成伪彩色图
                           colormap='spectral',  # 'bone', 'copper', 'gnuplot'
                           # color=(0, 1, 0),   # Used a fixed (r,g,b) instead
                           figure=fig,
                           )
+            mlab.points3d(0, 0, 0, color=(1, 1, 1), mode="sphere", scale_factor=1)
+            axes = np.array(
+                [[20.0, 0.0, 0.0, 0.0], [0.0, 20.0, 0.0, 0.0], [0.0, 0.0, 20.0, 0.0]],
+                dtype=np.float64,
+            )
+            mlab.plot3d(
+                [0, axes[0, 0]],
+                [0, axes[0, 1]],
+                [0, axes[0, 2]],
+                color=(1, 0, 0),
+                tube_radius=None,
+                figure=fig,
+            )
+            # y轴
+            mlab.plot3d(
+                [0, axes[1, 0]],
+                [0, axes[1, 1]],
+                [0, axes[1, 2]],
+                color=(0, 1, 0),
+                tube_radius=None,
+                figure=fig,
+            )
+            # z轴
+            mlab.plot3d(
+                [0, axes[2, 0]],
+                [0, axes[2, 1]],
+                [0, axes[2, 2]],
+                color=(0, 0, 1),
+                tube_radius=None,
+                figure=fig,
+            )
             mlab.show()
 
 
@@ -128,7 +161,7 @@ if __name__ == "__main__":
     DAO.open_calib("../resources/calib/000000.txt")
     DAO.open_pointcloud("../resources/Lidar/000000.bin")
     DAO.open_image("../resources/image/000000.png")
-    DAO.paint("color")
+    DAO.paint(vals="color")
     print("transform = ", DAO.transform)
 
 
