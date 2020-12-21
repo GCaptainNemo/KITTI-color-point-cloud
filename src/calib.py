@@ -3,6 +3,7 @@ import cv2
 from mayavi import mlab
 
 import mayavi
+import pcl
 
 
 # mayavi 4.7.2, vtk-9.0.1
@@ -66,6 +67,7 @@ class openKittiFiles:
         # degr = np.degrees(np.arctan(self.z / d))
 
         if vals == 'color':
+            # true color point cloud
             size = np.size(self.x, 0)
             print("point cloud size = ", size)
             xy_coordinate = np.matmul(self.transform,
@@ -82,25 +84,25 @@ class openKittiFiles:
             column_bound = self.image.shape[1]
             rgb = np.array([[0, 0, 0]])
             for i in range(size):
-                row = round(xy_coordinate[1][i])
-                column = round(xy_coordinate[0][i])
-                if 0 <= row < row_bound and 0 <= column < column_bound:
-                    colori = np.array([self.image[round(xy_coordinate[1][i]),
-                               round(xy_coordinate[0][i])]])
-                    rgb = np.concatenate((rgb, colori), axis=0)
+                if self.x[i] >= 0:
+                    row = round(xy_coordinate[1][i])
+                    column = round(xy_coordinate[0][i])
+                    if 0 <= row < row_bound and 0 <= column < column_bound:
+                        colori = np.array([self.image[round(xy_coordinate[1][i]),
+                                   round(xy_coordinate[0][i])]])
+                        rgb = np.concatenate((rgb, colori), axis=0)
+                    else:
+                        rgb = np.concatenate((rgb, np.zeros((1, 3))), axis=0)
                 else:
                     rgb = np.concatenate((rgb, np.zeros((1, 3))), axis=0)
             rgb = rgb[1:, :]
 
-            # rgb = np.array([self.image[round(xy_coordinate[1][i]),
-            #                            round(xy_coordinate[0][i])] for i in range(size)]).T
-            # print(rgb)
-            # print("rgb size = ", np.size(rgb, axis=0))
+            # for i in range(size):
+            #     print(rgb[i, :])
+
             rgba = np.concatenate((rgb, 255 * np.ones((size, 1))), axis=1)
 
             # 一维向量都是列向量，np.size(self.x, 0)表示列的数目
-
-
             pts = mlab.pipeline.scalar_scatter(self.x, self.y, self.z)  # plot the points
             pts.add_attribute(rgba, 'colors')  # assign the colors to each point
             pts.data.point_data.set_active_scalars('colors')
@@ -158,9 +160,9 @@ class openKittiFiles:
 
 if __name__ == "__main__":
     DAO = openKittiFiles()
-    DAO.open_calib("../resources/calib/000000.txt")
-    DAO.open_pointcloud("../resources/Lidar/000000.bin")
-    DAO.open_image("../resources/image/000000.png")
+    DAO.open_calib("../resources/calib/000001.txt")
+    DAO.open_pointcloud("../resources/Lidar/000001.bin")
+    DAO.open_image("../resources/image/000001.png")
     DAO.paint(vals="color")
     print("transform = ", DAO.transform)
 
