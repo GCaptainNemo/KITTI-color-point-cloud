@@ -1,4 +1,4 @@
-# 3D-reconstruction
+# KITTI-color-point-cloud
 ## 简介
 利用KITTI数据集中的velodyne点云、图像和配准信息生成场景真彩色点云
 
