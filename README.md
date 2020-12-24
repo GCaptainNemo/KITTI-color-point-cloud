@@ -1,6 +1,6 @@
 # 3D-reconstruction
 ## 简介
-利用KITTI数据集中的velodyne点云、图像和配准信息生成场景的三维重建，并输出obj、mtl文件
+利用KITTI数据集中的velodyne点云、图像和配准信息生成场景真彩色点云
 
 ## 环境
 win10 python 3.6, 
