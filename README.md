@@ -17,5 +17,5 @@ mayavi 4.7.2, vtk-9.0.1 python-pcl
 6. [mayavi](https://mayavi.readthedocs.io/en/latest/mlab.html)
 
 ## 效果
-![](./result/color_pc.png)
-![](./result/000003.png)
+![image](./result/color_pc.png)
+![image](./result/000003.png)
