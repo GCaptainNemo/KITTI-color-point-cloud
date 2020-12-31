@@ -3,11 +3,18 @@
 利用KITTI数据集中的velodyne点云、图像和配准信息生成场景真彩色点云
 
 ## 环境
+
 win10 python 3.6, 
 
 mayavi 4.7.2, vtk-9.0.1 python-pcl
 
-## win10下python-pcl安装
+## 安装
+
+a. python依赖库安装
+```
+pip install -r requirements.txt
+```
+b. win10下python-pcl安装教程
 1. https://blog.csdn.net/find_god/article/details/101106373
 2. https://www.pianshen.com/article/1949934924/
 3. https://blog.csdn.net/find_god/article/details/101105262
@@ -19,3 +26,5 @@ mayavi 4.7.2, vtk-9.0.1 python-pcl
 ## 效果
 ![image](./result/color_pc.png)
 ![image](./result/000003.png)
+
+
