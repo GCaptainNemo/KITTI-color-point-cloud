@@ -13,8 +13,8 @@ mayavi 4.7.2, vtk-9.0.1 python-pcl
 3. https://blog.csdn.net/find_god/article/details/101105262
 4. https://github.com/PointCloudLibrary/pcl/releases/
 ## API 文档
-5. [python-PCL](https://python-pcl-fork.readthedocs.io/en/latest/)
-6. [mayavi](https://mayavi.readthedocs.io/en/latest/mlab.html)
+1. [python-PCL](https://python-pcl-fork.readthedocs.io/en/latest/)
+2. [mayavi](https://mayavi.readthedocs.io/en/latest/mlab.html)
 
 ## 效果
 ![image](./result/color_pc.png)
