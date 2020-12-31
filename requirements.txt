@@ -1,0 +1,5 @@
+numpy==1.19
+mayavi
+opencv-python
+vtk
+PyQt5
